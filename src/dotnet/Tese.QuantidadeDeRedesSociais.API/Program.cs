@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Tese.QuantidadeDeRedesSociais.API
+namespace Tese.QuantidadeDeRedesSociais.Api
 {
     public class Program
     {

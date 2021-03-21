@@ -348,4 +348,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-src/dotnet/Tese.QuantidadeDeRedesSociais.API/Properties/launchSettings.json
+src/dotnet/Tese.QuantidadeDeRedesSociais.Api/Properties/launchSettings.json
+.vscode/tasks.json

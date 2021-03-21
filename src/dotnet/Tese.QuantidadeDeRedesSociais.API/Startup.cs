@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace Tese.QuantidadeDeRedesSociais.API
+namespace Tese.QuantidadeDeRedesSociais.Api
 {
     public class Startup
     {
@@ -23,7 +23,7 @@ namespace Tese.QuantidadeDeRedesSociais.API
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tese.QuantidadeDeRedesSociais.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tese.QuantidadeDeRedesSociais.Api", Version = "v1" });
             });
         }
 
@@ -34,7 +34,7 @@ namespace Tese.QuantidadeDeRedesSociais.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tese.QuantidadeDeRedesSociais.API v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tese.QuantidadeDeRedesSociais.Api v1"));
             }
 
             app.UseHttpsRedirection();
