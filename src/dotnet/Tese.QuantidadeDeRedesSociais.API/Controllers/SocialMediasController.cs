@@ -30,7 +30,7 @@ namespace Tese.QuantidadeDeRedesSociais.Api.Controllers
     }
 
     [ApiController]
-    [Route("[usuarios/{login}]/redes-sociais")]
+    [Route("usuarios/{login}/redes-sociais")]
     public class SocialMediasController : ControllerBase
     {
         public async Task<IActionResult> GetSocialMediasAsync(string login)
