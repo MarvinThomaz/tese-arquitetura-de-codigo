@@ -350,3 +350,6 @@ MigrationBackup/
 .ionide/
 src/dotnet/Tese.QuantidadeDeRedesSociais.Api/Properties/launchSettings.json
 .vscode/tasks.json
+src/dotnet/Tese.QuantidadeDeRedesSociais.API/.vscode/launch.json
+.gitignore
+src/dotnet/Tese.QuantidadeDeRedesSociais.API/.vscode/tasks.json

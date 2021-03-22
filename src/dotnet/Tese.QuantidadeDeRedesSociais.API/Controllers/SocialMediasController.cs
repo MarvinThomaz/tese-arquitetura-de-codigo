@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -11,22 +12,17 @@ namespace Tese.QuantidadeDeRedesSociais.Api.Controllers
 {
     internal class GitHubResponse
     {
-
+        public string Login { get; set; }
     }
 
     internal class SocialMediaResponse
     {
-        public bool RegisterExists { get; internal set; }
+        public bool RegisterExists { get; set; }
     }
 
     internal class ErrorResponse
     {
-        public string Mensagem { get; }
-
-        public ErrorResponse(string mensagem)
-        {
-            Mensagem = mensagem;
-        }
+        public string Message { get; set; }
     }
 
     [ApiController]
@@ -35,18 +31,26 @@ namespace Tese.QuantidadeDeRedesSociais.Api.Controllers
     {
         public async Task<IActionResult> GetSocialMediasAsync(string login)
         {
-            var urlGitHub = @"https://docs.github.com/en/rest/reference/users#get-a-user";
+            var urlGitHub = $"https://api.github.com/api/v3/user";
             var httpClient = new HttpClient();
 
             using (httpClient)
             {
-                var gitHubResponse = await httpClient.GetAsync(urlGitHub);
+                var gitHubRequest = new HttpRequestMessage { RequestUri = new Uri(urlGitHub) };
+                var gitHubBasicCredentials = $"{Environment.GetEnvironmentVariable("GITHUB_USERNAME")}:{Environment.GetEnvironmentVariable("GITHUB_PERSONAL_ACCESS_TOKEN")}";
+                var mediaTypeWithQualityHeaderValue = new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json");
+
+                gitHubRequest.Headers.Accept.Add(mediaTypeWithQualityHeaderValue);
+                gitHubRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", gitHubBasicCredentials);
+
+                var gitHubResponse = await httpClient.SendAsync(gitHubRequest);
 
                 if (gitHubResponse.IsSuccessStatusCode)
                 {
+                    var gitHubJsonResponse = await gitHubResponse.Content.ReadAsStringAsync();
+
                     try
                     {
-                        var gitHubJsonResponse = await gitHubResponse.Content.ReadAsStringAsync();
                         var gitHubResponseObj = JsonSerializer.Deserialize<GitHubResponse>(gitHubJsonResponse);
                         var socialMediaResponse = new SocialMediaResponse
                         {
@@ -63,9 +67,7 @@ namespace Tese.QuantidadeDeRedesSociais.Api.Controllers
 
                         logger.LogError(ex, ex.Message);
 
-                        var value = new ErrorResponse("Ops! Ocorreu um erro, entre em contato com nossos administradores pela central (xx) xxxx-xxxx.");
-
-                        return base.StatusCode(StatusCodes.Status500InternalServerError, value);
+                        return UnexpectedError();
                     }
                 }
                 else if (gitHubResponse.StatusCode == HttpStatusCode.NotFound)
@@ -79,11 +81,16 @@ namespace Tese.QuantidadeDeRedesSociais.Api.Controllers
                 }
                 else
                 {
-                    var value = new ErrorResponse("Ops! Ocorreu um erro, entre em contato com nossos administradores pela central (xx) xxxx-xxxx.");
-
-                    return base.StatusCode(StatusCodes.Status500InternalServerError, value);
+                    return UnexpectedError();
                 }
             }
+        }
+
+        private IActionResult UnexpectedError()
+        {
+            var value = new ErrorResponse { Message = "Ops! Ocorreu um erro, entre em contato com nossos administradores pela central (xx) xxxx-xxxx." };
+
+            return base.StatusCode(StatusCodes.Status500InternalServerError, value);
         }
     }
 }
